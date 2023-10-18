@@ -23,7 +23,7 @@ export default function TableButtons() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex items-center gap-1 bg-slate-300 py-1 px-4"
+        className="flex items-center gap-1 hover:bg-slate-400 bg-slate-300 py-1 px-4"
         onClick={() => setShowForm(true)}
       >
         <IoAddOutline size={28} color="green" />
@@ -34,7 +34,7 @@ export default function TableButtons() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.4 }}
-        className={`SELECTED_ITEM flex items-center gap-1 py-1 px-4 ${
+        className={`SELECTED_ITEM flex items-center gap-1 hover:bg-slate-400 py-1 px-4 ${
           showButtons
             ? "opacity-100 pointer-events-auto bg-slate-300"
             : "opacity-50 pointer-events-none bg-slate-200"
@@ -51,7 +51,7 @@ export default function TableButtons() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.6 }}
-        className={`SELECTED_ITEM flex items-center gap-1 py-1 px-4 ${
+        className={`SELECTED_ITEM flex items-center gap-1 hover:bg-slate-400 py-1 px-4 ${
           showButtons
             ? "opacity-100 pointer-events-auto bg-slate-300"
             : "opacity-50 pointer-events-none bg-slate-200"
@@ -71,14 +71,11 @@ function DeletePopUp() {
   const { selectedId, setShowDeletePopup } = useAppContext();
 
   // delete patient from database by id
-  function handleDelete(id) {
+  async function handleDelete(id) {
     try {
-      // production route
-      axios.post("/delete", { id: id }).then((res) => console.log(res));
-      // test route
-      // axios
-      //   .post("http://localhost:3000/delete", { id: id })
-      //   .then((res) => console.log(res));
+      await axios.delete(
+        `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
+      );
     } catch (error) {
       console.log(`Error deleting patient: ${error}`);
     }

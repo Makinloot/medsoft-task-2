@@ -12,19 +12,73 @@ const ContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedId, setSelectedId] = useState(true);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   async function fetchPatients() {
     try {
-      // production route
-      const { data } = await axios.get("/patients");
-      // testing route
-      // const { data } = await axios.get("http://localhost:3000/patients");
+      const { data } = await axios.get(
+        "https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/"
+      );
       setData(data);
     } catch (error) {
       console.log("Something went wrong", error);
+    }
+  }
+
+  // add new patient
+  async function insertPatient({
+    fullName,
+    dob,
+    genderId,
+    phone,
+    address,
+    personalNum,
+    email,
+  }) {
+    try {
+      const patientValues = {
+        fullName,
+        dob: Math.floor(new Date(dob).getTime() / 1000),
+        genderId: Number(genderId),
+        phone,
+        address,
+        personalNum,
+        email,
+      };
+      axios
+        .post(
+          "https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/",
+          patientValues
+        )
+        .then((res) => {
+          console.log(res);
+          setShowForm(false);
+        });
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  }
+
+  // update existing patient
+  async function updatePatient(values, id) {
+    try {
+      const unformattedDob = values.dob;
+      values.dob = Math.floor(new Date(unformattedDob).getTime() / 1000);
+      console.log("AEEEE", values.dob);
+      axios
+        .put(
+          `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`,
+          values
+        )
+        .then((res) => {
+          console.log(res);
+          setShowUpdateForm(false);
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(`Error updating patient: ${error}`);
     }
   }
 
@@ -44,6 +98,8 @@ const ContextProvider = ({ children }) => {
     setShowDeletePopup,
     showUpdateForm,
     setShowUpdateForm,
+    insertPatient,
+    updatePatient,
   };
   return <Context.Provider value={values}>{children}</Context.Provider>;
 };

@@ -4,39 +4,22 @@ import { Field, Formik, Form as FormikForm } from "formik";
 import { useAppContext } from "../context/ContextProvider";
 import { useEffect, useRef, useState } from "react";
 import { InputField } from "./Form";
-import axios from "axios";
 import formValidationSchema from "../validationSchema";
 import { motion } from "framer-motion";
 
 export default function UpdateForm({ id }) {
-  const { data, setShowUpdateForm } = useAppContext();
+  // console.log("id", id);
+  const { data, setShowUpdateForm, updatePatient } = useAppContext();
   const formRef = useRef(null);
   const [formValues, setFormValues] = useState({});
   // filter data by given id
   const filterData = () => data.filter((item) => item.id === id);
 
-  function handleSubmit(values) {
-    try {
-      values.id = id;
-      (values.birthdate = new Date(values.birthdate)
-        .toLocaleDateString("en-GB")
-        .replace(/\//g, ".")),
-        axios
-          .post("/update", values)
-          // .post("http://localhost:3000/update", values)
-          .then((res) => {
-            console.log(res);
-            setShowUpdateForm(false);
-          })
-          .catch((err) => console.log(err));
-    } catch (error) {
-      console.log(`Error updating patient: ${error}`);
-    }
-  }
-
   useEffect(() => {
     setFormValues(filterData()[0]);
+    console.log(filterData()[0], "YEY");
   }, [id]);
+
   return (
     <div className="Update-form">
       <div className="container">
@@ -45,24 +28,20 @@ export default function UpdateForm({ id }) {
           whileInView={{ opacity: 1 }}
           className="Update-form-wrapper flex items-center justify-center fixed h-screen w-full top-0 left-0 bg-[#000000b7]"
         >
-          {formValues?.name && (
+          {formValues?.fullName && (
             <Formik
               initialValues={{
-                name: formValues?.name,
-                birthdate: new Date(
-                  formValues?.birthdate.split(".").reverse().join("-")
-                )
+                fullName: formValues?.fullName,
+                dob: new Date(formValues?.dob * 1000)
                   .toISOString()
                   .split("T")[0],
-                sex: formValues?.sex,
-                mobile: formValues?.mobile,
-                location: formValues?.location,
-                identification: formValues?.identification,
+                genderId: formValues?.genderId,
+                phone: formValues?.phone,
+                address: formValues?.address,
+                personalNum: formValues?.personalNum,
                 email: formValues?.email,
               }}
-              onSubmit={(values) => {
-                handleSubmit(values);
-              }}
+              onSubmit={(values) => updatePatient(values, id)}
               validationSchema={formValidationSchema}
             >
               {({
@@ -86,11 +65,64 @@ export default function UpdateForm({ id }) {
                     <InputField
                       handleChange={handleChange}
                       handleBlur={handleBlur}
-                      name="name"
+                      name="fullName"
                       label="სახელი გვარი"
-                      value={values.name}
-                      error={touched.name && errors.name}
+                      value={values.fullName}
+                      error={touched.fullName && errors.fullName}
                       required
+                    />
+                    <InputField
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      name="dob"
+                      label="დაბ თარიღი"
+                      value={values.dob}
+                      error={touched.dob && errors.dob}
+                      type="date"
+                      required
+                    />
+                    <div className="radio-group my-6 mb-2 text-white">
+                      {touched.genderId && errors.genderId && (
+                        <span className="text-red-400">{errors.genderId}</span>
+                      )}
+                      <div className="Input-field">
+                        <label>
+                          <Field type="radio" name="genderId" value="0" />
+                          <span className="ml-2">მამრობითი</span>
+                        </label>
+                      </div>
+                      <div className="Input-field">
+                        <label>
+                          <Field type="radio" name="genderId" value="1" />
+                          <span className="ml-2">მდედრობითი</span>
+                        </label>
+                      </div>
+                    </div>
+                    <InputField
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      name="phone"
+                      label="მობ ნომერი"
+                      value={values.phone}
+                      error={touched.phone && errors.phone}
+                      type="number"
+                    />
+                    <InputField
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      name="address"
+                      label="მისამართი"
+                      value={values.address}
+                      error={touched.address && errors.address}
+                      required
+                    />
+                    <InputField
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      name="personalNum"
+                      label="პირადი ნომერი"
+                      value={values.personalNum}
+                      error={touched.personalNum && errors.personalNum}
                     />
                     <InputField
                       handleChange={handleChange}
@@ -100,59 +132,6 @@ export default function UpdateForm({ id }) {
                       value={values.email}
                       error={touched.email && errors.email}
                       type="email"
-                    />
-                    <InputField
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      name="identification"
-                      label="პირადი ნომერი"
-                      value={values.identification}
-                      error={touched.identification && errors.identification}
-                    />
-                    <InputField
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      name="birthdate"
-                      label="დაბ თარიღი"
-                      value={values.birthdate}
-                      error={touched.birthdate && errors.birthdate}
-                      type="date"
-                      required
-                    />
-                    <div className="radio-group my-6 mb-2 text-white">
-                      {touched.sex && errors.sex && (
-                        <span className="text-red-400">{errors.sex}</span>
-                      )}
-                      <div className="Input-field">
-                        <label>
-                          <Field type="radio" name="sex" value="მამრობითი" />
-                          <span className="ml-2">მამრობითი</span>
-                        </label>
-                      </div>
-                      <div className="Input-field">
-                        <label>
-                          <Field type="radio" name="sex" value="მდედრობითი" />
-                          <span className="ml-2">მდედრობითი</span>
-                        </label>
-                      </div>
-                    </div>
-                    <InputField
-                      handleChange={handleChange("mobile")}
-                      handleBlur={handleBlur("mobile")}
-                      name="mobile"
-                      label="მობ ნომერი"
-                      value={values.mobile}
-                      error={touched.mobile && errors.mobile}
-                      type="number"
-                    />
-                    <InputField
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      name="location"
-                      label="მისამართი"
-                      value={values.location}
-                      error={touched.location && errors.location}
-                      required
                     />
                     <div className="flex my-4 justify-between">
                       <button

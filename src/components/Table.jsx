@@ -23,9 +23,7 @@ export default function Table() {
                 <thead>
                   <tr className="border-black text-black">
                     <th className="border-r border-black">ID</th>
-                    <th className="border-r border-black">
-                      პაციენტის გვარი სახელი
-                    </th>
+                    <th className="border-r border-black">გვარი სახელი</th>
                     <th className="border-r border-black">დაბ თარიღი</th>
                     <th className="border-r border-black">სქესი</th>
                     <th className="border-r border-black">მობ ნომერი</th>
@@ -38,16 +36,6 @@ export default function Table() {
                   {data?.map((item) => (
                     <TableRow key={item.id} {...item} />
                   ))}
-                  <tr className="border-black hover:bg-slate-200 h-[25px]">
-                    <th className="border-r border-black"></th>
-                    <td className="border-r border-black"></td>
-                    <td className="border-r border-black"></td>
-                    <td className="border-r border-black"></td>
-                    <td className="border-r border-black"></td>
-                    <td className="border-r border-black"></td>
-                    <td className="border-r border-black"></td>
-                    <td className=""></td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -60,12 +48,12 @@ export default function Table() {
 
 function TableRow({
   id,
-  name,
-  birthdate,
-  sex,
-  mobile,
-  location,
-  identification,
+  fullName,
+  dob,
+  genderId,
+  phone,
+  address,
+  personalNum,
   email,
 }) {
   const {
@@ -114,12 +102,20 @@ function TableRow({
       >
         {id}
       </th>
-      <td className="SELECTED_ITEM border-r border-black">{name}</td>
-      <td className="SELECTED_ITEM border-r border-black">{birthdate}</td>
-      <td className="SELECTED_ITEM border-r border-black">{sex}</td>
-      <td className="SELECTED_ITEM border-r border-black">{mobile}</td>
-      <td className="SELECTED_ITEM border-r border-black">{location}</td>
-      <td className="SELECTED_ITEM border-r border-black">{identification}</td>
+      <td className="SELECTED_ITEM border-r border-black">{fullName}</td>
+      <td className="SELECTED_ITEM border-r border-black">
+        {new Date(dob * 1000).toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })}
+      </td>
+      <td className="SELECTED_ITEM border-r border-black">
+        {genderId == 0 ? "მამრობითი" : "მდედრობითი"}
+      </td>
+      <td className="SELECTED_ITEM border-r border-black">{phone}</td>
+      <td className="SELECTED_ITEM border-r border-black">{address}</td>
+      <td className="SELECTED_ITEM border-r border-black">{personalNum}</td>
       <td className="SELECTED_ITEM">{email}</td>
     </tr>
   );
