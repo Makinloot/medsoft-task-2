@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { IoAddOutline } from "react-icons/io5";
 import { useAppContext } from "../context/ContextProvider";
@@ -7,63 +8,67 @@ import axios from "axios";
 import { motion } from "framer-motion";
 
 export default function TableButtons() {
-  const {
-    setShowForm,
-    showButtons,
-    setShowDeletePopup,
-    showDeletePopup,
-    setShowUpdateForm,
-  } = useAppContext();
+  const { showDeletePopup } = useAppContext();
 
   return (
     <div className="Table-buttons flex flex-wrap justify-center sm:justify-start gap-2 text-black">
       {showDeletePopup && <DeletePopUp />}
       {/* ADD PATIENTS BUTTON */}
-      <motion.button
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-        className="flex items-center gap-1 hover:bg-slate-400 bg-slate-300 py-1 px-4"
-        onClick={() => setShowForm(true)}
-      >
-        <IoAddOutline size={28} color="green" />
-        <span className="text-sm">დამატება</span>
-      </motion.button>
+      <TableButton
+        value={"დამატება"}
+        icon={<IoAddOutline size={28} color="green" />}
+        noError
+      />
       {/* UPDATE PATIENTS BUTTON */}
-      <motion.button
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4 }}
-        className={`SELECTED_ITEM flex items-center gap-1 hover:bg-slate-400 py-1 px-4 ${
-          showButtons
-            ? "opacity-100 pointer-events-auto bg-slate-300"
-            : "opacity-50 pointer-events-none bg-slate-200"
-        }`}
-        onClick={() => setShowUpdateForm(true)}
-      >
-        <div className="SELECTED_ITEM">
-          <BiEdit className="SELECTED_ITEM" size={24} color="orange" />
-        </div>
-        <span className="text-sm SELECTED_ITEM">რედაქტირება</span>
-      </motion.button>
+      <TableButton
+        value={"რედაქტირება"}
+        icon={<BiEdit className="SELECTED_ITEM" size={24} color="orange" />}
+        action={"update"}
+      />
       {/* DELETE PATIENTS BUTTON */}
-      <motion.button
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.6 }}
-        className={`SELECTED_ITEM flex items-center gap-1 hover:bg-slate-400 py-1 px-4 ${
-          showButtons
-            ? "opacity-100 pointer-events-auto bg-slate-300"
-            : "opacity-50 pointer-events-none bg-slate-200"
-        }`}
-        onClick={() => setShowDeletePopup(true)}
-      >
-        <div className="SELECTED_ITEM">
+      <TableButton
+        value={"წაშლა"}
+        icon={
           <TiDeleteOutline className="SELECTED_ITEM" size={24} color="red" />
-        </div>
-        <span className="text-sm SELECTED_ITEM">წაშლა</span>
-      </motion.button>
+        }
+        action={"delete"}
+      />
     </div>
+  );
+}
+
+function TableButton({ value, icon, action, noError }) {
+  const { setShowForm, showButtons, setShowDeletePopup, setShowUpdateForm } =
+    useAppContext();
+  return (
+    <motion.button
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.6 }}
+      className={
+        noError
+          ? `flex items-center gap-1 hover:bg-slate-400 bg-slate-300 py-1 px-4`
+          : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
+              showButtons
+                ? "opacity-100 bg-slate-300 hover:bg-slate-400"
+                : "opacity-50 bg-slate-200 cursor-not-allowed"
+            }`
+      }
+      onClick={() => {
+        if (showButtons) {
+          if (action === "delete") setShowDeletePopup(true);
+          else if (action === "update") setShowUpdateForm(true);
+        } else if (noError) setShowForm(true);
+      }}
+    >
+      <div className="SELECTED_ITEM">{icon}</div>
+      <span className="text-sm SELECTED_ITEM">{value}</span>
+      {!showButtons && !noError && (
+        <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
+          <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
+        </div>
+      )}
+    </motion.button>
   );
 }
 
@@ -73,9 +78,11 @@ function DeletePopUp() {
   // delete patient from database by id
   async function handleDelete(id) {
     try {
-      await axios.delete(
-        `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
-      );
+      await axios
+        .delete(
+          `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
+        )
+        .then((res) => console.log("res", res));
     } catch (error) {
       console.log(`Error deleting patient: ${error}`);
     }

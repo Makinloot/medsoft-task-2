@@ -123,7 +123,7 @@ export function InputField({
           სქესი
         </label>
         <Select
-          placeholder="Select your gender"
+          placeholder="სქესი"
           onChange={handleChange}
           onBlur={handleBlur}
           value={value}

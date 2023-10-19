@@ -13,33 +13,39 @@ export default function Table() {
       <div className="container">
         <div className="Table-wrapper">
           <TableButtons />
-          <motion.div
-            initial={{ y: 50 }}
-            animate={{ y: 0 }}
-            className="border border-black mt-4"
-          >
-            <div className="overflow-x-auto">
-              <table className="table table-xs">
-                <thead>
-                  <tr className="border-black text-black">
-                    <th className="border-r border-black">ID</th>
-                    <th className="border-r border-black">გვარი სახელი</th>
-                    <th className="border-r border-black">დაბ თარიღი</th>
-                    <th className="border-r border-black">სქესი</th>
-                    <th className="border-r border-black">მობ ნომერი</th>
-                    <th className="border-r border-black">მისამართი</th>
-                    <th className="border-r border-black">პირადი ნომერი</th>
-                    <th className="border-r">ელ-ფოსტა</th>
-                  </tr>
-                </thead>
-                <tbody className="text-black">
-                  {data?.map((item) => (
-                    <TableRow key={item.id} {...item} />
-                  ))}
-                </tbody>
-              </table>
+          {data.length > 0 ? (
+            <motion.div
+              initial={{ y: 50 }}
+              animate={{ y: 0 }}
+              className="border border-black mt-4"
+            >
+              <div className="overflow-x-auto">
+                <table className="table table-xs">
+                  <thead>
+                    <tr className="border-black text-black">
+                      <th className="border-r border-black">ID</th>
+                      <th className="border-r border-black">გვარი სახელი</th>
+                      <th className="border-r border-black">დაბ თარიღი</th>
+                      <th className="border-r border-black">სქესი</th>
+                      <th className="border-r border-black">მობ ნომერი</th>
+                      <th className="border-r border-black">მისამართი</th>
+                      <th className="border-r border-black">პირადი ნომერი</th>
+                      <th className="border-r">ელ-ფოსტა</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-black">
+                    {data?.map((item) => (
+                      <TableRow key={item.id} {...item} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          ) : (
+            <div className="loading-animation">
+              <div className="spinner"></div>
             </div>
-          </motion.div>
+          )}
         </div>
       </div>
     </div>
