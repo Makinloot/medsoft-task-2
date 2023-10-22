@@ -47,17 +47,16 @@ const ContextProvider = ({ children }) => {
         personalNum,
         email,
       };
-      axios
-        .post(
-          "https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/",
-          patientValues
-        )
-        .then((res) => {
-          console.log(res);
-          setShowForm(false);
-        });
+      const res = await axios.post(
+        "https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/",
+        patientValues
+      );
+      setShowForm(false);
+      console.log(`Patient successfully added: ${res}`);
     } catch (error) {
-      console.log("Something went wrong", error);
+      setShowForm(false);
+      setShowDeletePopup("error");
+      console.log(`Error adding patient: ${error}`);
     }
   }
 
@@ -66,18 +65,15 @@ const ContextProvider = ({ children }) => {
     try {
       const unformattedDob = values.dob;
       values.dob = Math.floor(new Date(unformattedDob).getTime() / 1000);
-      console.log("AEEEE", values.dob);
-      axios
-        .put(
-          `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`,
-          values
-        )
-        .then((res) => {
-          console.log(res);
-          setShowUpdateForm(false);
-        })
-        .catch((err) => console.log(err));
+      const res = await axios.put(
+        `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`,
+        values
+      );
+      console.log(res);
+      setShowUpdateForm(false);
     } catch (error) {
+      setShowUpdateForm(false);
+      setShowDeletePopup("error");
       console.log(`Error updating patient: ${error}`);
     }
   }

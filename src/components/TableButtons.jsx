@@ -12,7 +12,8 @@ export default function TableButtons() {
 
   return (
     <div className="Table-buttons flex flex-wrap justify-center sm:justify-start gap-2 text-black">
-      {showDeletePopup && <DeletePopUp />}
+      {showDeletePopup === "delete" && <DeletePopUp />}
+      {showDeletePopup === "error" && <DeletePopUp error />}
       {/* ADD PATIENTS BUTTON */}
       <TableButton
         value={"დამატება"}
@@ -56,7 +57,7 @@ function TableButton({ value, icon, action, noError }) {
       }
       onClick={() => {
         if (showButtons) {
-          if (action === "delete") setShowDeletePopup(true);
+          if (action === "delete") setShowDeletePopup("delete");
           else if (action === "update") setShowUpdateForm(true);
         } else if (noError) setShowForm(true);
       }}
@@ -72,18 +73,18 @@ function TableButton({ value, icon, action, noError }) {
   );
 }
 
-function DeletePopUp() {
+function DeletePopUp({ error }) {
   const { selectedId, setShowDeletePopup } = useAppContext();
 
   // delete patient from database by id
   async function handleDelete(id) {
     try {
-      await axios
-        .delete(
-          `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
-        )
-        .then((res) => console.log("res", res));
+      const res = await axios.delete(
+        `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
+      );
+      console.log("Patient successfully deleted", res);
     } catch (error) {
+      setShowDeletePopup("error");
       console.log(`Error deleting patient: ${error}`);
     }
   }
@@ -99,26 +100,46 @@ function DeletePopUp() {
         whileInView={{ y: 0 }}
         className="SELECTED_ITEM border border-black rounded-sm py-2 px-6 bg-white"
       >
-        <p className="SELECTED_ITEM">გსურთ პაციენტის წაშლა ?</p>
-        <div className="SELECTED_ITEM flex justify-between my-4">
-          <button
-            className="bg-green-400 py-1 px-4"
-            onClick={() => {
-              handleDelete(selectedId);
-              setShowDeletePopup(false);
-            }}
-          >
-            დიახ
-          </button>
-          <button
-            className="SELECTED_ITEM bg-red-400 py-1 px-4"
-            onClick={() => {
-              setShowDeletePopup(false);
-            }}
-          >
-            არა
-          </button>
-        </div>
+        {error ? (
+          <>
+            <p className="SELECTED_ITEM text-center max-w-[300px]">
+              დაფიქსირდა შეცდომა, გთხოვთ ცადოთ ხელახლა
+            </p>
+            <div className="SELECTED_ITEM flex justify-center my-4">
+              <button
+                className="SELECTED_ITEM text-center bg-red-400 py-1 px-4"
+                onClick={() => {
+                  setShowDeletePopup(false);
+                }}
+              >
+                დახურვა
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="SELECTED_ITEM">გსურთ პაციენტის წაშლა ?</p>
+            <div className="SELECTED_ITEM flex justify-between my-4">
+              <button
+                className="bg-green-400 py-1 px-4"
+                onClick={() => {
+                  handleDelete(selectedId);
+                  setShowDeletePopup(false);
+                }}
+              >
+                დიახ
+              </button>
+              <button
+                className="SELECTED_ITEM bg-red-400 py-1 px-4"
+                onClick={() => {
+                  setShowDeletePopup(false);
+                }}
+              >
+                არა
+              </button>
+            </div>
+          </>
+        )}
       </motion.div>
     </motion.div>
   );
