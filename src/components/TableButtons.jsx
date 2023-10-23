@@ -6,6 +6,7 @@ import { BiEdit } from "react-icons/bi";
 import { TiDeleteOutline } from "react-icons/ti";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { Button } from "antd";
 
 export default function TableButtons() {
   const { showDeletePopup, showError } = useAppContext();
@@ -42,7 +43,8 @@ function TableButton({ value, icon, action, noError }) {
   const { setShowForm, showButtons, setShowDeletePopup, setShowUpdateForm } =
     useAppContext();
   return (
-    <motion.button
+    <>
+      {/* <motion.button
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.6 }}
@@ -61,15 +63,32 @@ function TableButton({ value, icon, action, noError }) {
           else if (action === "update") setShowUpdateForm(true);
         } else if (noError) setShowForm(true);
       }}
-    >
-      <div className="SELECTED_ITEM">{icon}</div>
-      <span className="text-sm SELECTED_ITEM">{value}</span>
-      {!showButtons && !noError && (
-        <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
-          <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
-        </div>
-      )}
-    </motion.button>
+    > */}
+      <Button
+        className={
+          noError
+            ? `flex items-center gap-1 py-1 px-4`
+            : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
+                showButtons ? "opacity-100 " : "opacity-50 cursor-not-allowed"
+              }`
+        }
+        onClick={() => {
+          if (showButtons) {
+            if (action === "delete") setShowDeletePopup("delete");
+            else if (action === "update") setShowUpdateForm(true);
+          } else if (noError) setShowForm(true);
+        }}
+      >
+        <div className="SELECTED_ITEM">{icon}</div>
+        <span className="text-sm SELECTED_ITEM">{value}</span>
+        {!showButtons && !noError && (
+          <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
+            <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
+          </div>
+        )}
+      </Button>
+      {/* </motion.button> */}
+    </>
   );
 }
 
