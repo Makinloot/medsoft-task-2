@@ -24,14 +24,14 @@ export default function TableButtons() {
       {/* UPDATE PATIENTS BUTTON */}
       <TableButton
         value={"რედაქტირება"}
-        icon={<BiEdit className="SELECTED_ITEM" size={24} color="orange" />}
+        icon={<BiEdit className="ant-table-cell" size={24} color="orange" />}
         action={"update"}
       />
       {/* DELETE PATIENTS BUTTON */}
       <TableButton
         value={"წაშლა"}
         icon={
-          <TiDeleteOutline className="SELECTED_ITEM" size={24} color="red" />
+          <TiDeleteOutline className="ant-table-cell" size={24} color="red" />
         }
         action={"delete"}
       />
@@ -40,8 +40,13 @@ export default function TableButtons() {
 }
 
 function TableButton({ value, icon, action, noError }) {
-  const { setShowForm, showButtons, setShowDeletePopup, setShowUpdateForm } =
-    useAppContext();
+  const {
+    setShowForm,
+    showButtons,
+    setShowDeletePopup,
+    setShowUpdateForm,
+    setSelectedId,
+  } = useAppContext();
   return (
     <>
       <motion.div
@@ -53,7 +58,7 @@ function TableButton({ value, icon, action, noError }) {
           className={
             noError
               ? `flex items-center gap-1 py-1 px-4`
-              : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
+              : `ant-table-cell table-button flex items-center gap-1 py-1 px-4 relative ${
                   showButtons ? "opacity-100 " : "opacity-50 cursor-not-allowed"
                 }`
           }
@@ -64,8 +69,8 @@ function TableButton({ value, icon, action, noError }) {
             } else if (noError) setShowForm(true);
           }}
         >
-          <div className="SELECTED_ITEM">{icon}</div>
-          <span className="text-sm SELECTED_ITEM">{value}</span>
+          <div className="ant-table-cell">{icon}</div>
+          <span className={"text-sm ant-table-cell"}>{value}</span>
           {!showButtons && !noError && (
             <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
               <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
@@ -83,6 +88,7 @@ function DeletePopUp() {
 
   // delete patient from database by id
   async function handleDelete(id) {
+    console.log(`ID FROM DELETE FUNCTION ${id}`);
     try {
       const res = await axios.delete(
         `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
@@ -99,15 +105,15 @@ function DeletePopUp() {
     <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      className="SELECTED_ITEM fixed z-[1000] top-0 left-0 h-screen w-screen flex items-center justify-center bg-black/60"
+      className="ant-table-cell fixed z-[1000] top-0 left-0 h-screen w-screen flex items-center justify-center bg-black/60"
     >
       <motion.div
         initial={{ y: -100 }}
         whileInView={{ y: 0 }}
-        className="SELECTED_ITEM border border-black rounded-sm py-2 px-6 bg-white"
+        className="ant-table-cell border border-black rounded-sm py-2 px-6 bg-white"
       >
-        <p className="SELECTED_ITEM">გსურთ პაციენტის წაშლა ?</p>
-        <div className="SELECTED_ITEM flex justify-between my-4">
+        <p className="ant-table-cell">გსურთ პაციენტის წაშლა ?</p>
+        <div className="ant-table-cell flex justify-between my-4">
           <button
             className="bg-green-400 py-1 px-4"
             onClick={() => {
@@ -118,7 +124,7 @@ function DeletePopUp() {
             დიახ
           </button>
           <button
-            className="SELECTED_ITEM bg-red-400 py-1 px-4"
+            className="ant-table-cell bg-red-400 py-1 px-4"
             onClick={() => {
               setShowDeletePopup(false);
             }}

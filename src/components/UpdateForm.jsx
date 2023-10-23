@@ -28,9 +28,10 @@ export default function UpdateForm({ id }) {
             <Formik
               initialValues={{
                 fullName: formValues?.fullName,
-                dob: new Date(formValues?.dob * 1000)
-                  .toISOString()
-                  .split("T")[0],
+                dob: formValues?.dob.replace(
+                  /(\d{2})\.(\d{2})\.(\d{4})/,
+                  "$2/$1/$3"
+                ),
                 genderId:
                   formValues?.genderId == 0 ? "მამრობითი" : "მდედრობითი",
                 phone: formValues?.phone,

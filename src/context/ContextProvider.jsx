@@ -17,12 +17,21 @@ const ContextProvider = ({ children }) => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
+  // fetch patients
   async function fetchPatients() {
     try {
       const { data } = await axios.get(
         "https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/"
       );
-      setData(data);
+      // const formattedData = []
+      const formattedData = data.map((item) => ({
+        ...item,
+        dob: new Date(item.dob * 1000)
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "."),
+        genderId: item.genderId == 0 ? "მამრობითი" : "მდედრობითი",
+      }));
+      setData(formattedData);
     } catch (error) {
       console.log("Something went wrong", error);
     }
@@ -93,6 +102,25 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     fetchPatients();
   }, [showForm, showButtons, showDeletePopup, showUpdateForm]);
+
+  useEffect(() => {
+    // check if click contains class ant-table-cell
+    const handleClick = (e) => {
+      if (e.target.classList.contains("ant-table-cell")) return;
+      else if (
+        !e.target.classList.contains("ant-table-cell") &&
+        showUpdateForm === true
+      )
+        return;
+      else if (!e.target.classList.contains("ant-table-cell")) {
+        setSelectedId("");
+        setShowButtons(false);
+      }
+    };
+    window.addEventListener("click", handleClick);
+
+    return () => window.removeEventListener("click", handleClick);
+  }, [showUpdateForm]);
 
   const values = {
     data,
