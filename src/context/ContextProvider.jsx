@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { message } from "antd";
 
 const Context = createContext(null);
 
@@ -52,9 +53,10 @@ const ContextProvider = ({ children }) => {
         patientValues
       );
       setShowForm(false);
+      showSuccess("პაციენტი წარმატებით დაემატა");
       console.log(`Patient successfully added: ${res}`);
     } catch (error) {
-      setShowForm(false);
+      showError();
       setShowDeletePopup("error");
       console.log(`Error adding patient: ${error}`);
     }
@@ -71,11 +73,21 @@ const ContextProvider = ({ children }) => {
       );
       console.log(res);
       setShowUpdateForm(false);
+      showSuccess("პაციენტის განახლება წარმატებით დასრულდა");
     } catch (error) {
       setShowUpdateForm(false);
-      setShowDeletePopup("error");
+      showError();
       console.log(`Error updating patient: ${error}`);
     }
+  }
+
+  // display error message on error
+  function showError() {
+    message.error("დაფიქსირდა შეცდომა, სცადეთ ხელახლა", 2);
+  }
+  // display success message on success
+  function showSuccess(msg) {
+    message.success(msg, 2);
   }
 
   useEffect(() => {
@@ -96,6 +108,8 @@ const ContextProvider = ({ children }) => {
     setShowUpdateForm,
     insertPatient,
     updatePatient,
+    showError,
+    showSuccess,
   };
   return <Context.Provider value={values}>{children}</Context.Provider>;
 };

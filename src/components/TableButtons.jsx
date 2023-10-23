@@ -8,12 +8,12 @@ import axios from "axios";
 import { motion } from "framer-motion";
 
 export default function TableButtons() {
-  const { showDeletePopup } = useAppContext();
+  const { showDeletePopup, showError } = useAppContext();
 
   return (
-    <div className="Table-buttons flex flex-wrap justify-center sm:justify-start gap-2 text-black">
+    <div className="Table-buttons text-red flex flex-wrap justify-center sm:justify-start gap-2 text-black">
       {showDeletePopup === "delete" && <DeletePopUp />}
-      {showDeletePopup === "error" && <DeletePopUp error />}
+
       {/* ADD PATIENTS BUTTON */}
       <TableButton
         value={"დამატება"}
@@ -73,8 +73,9 @@ function TableButton({ value, icon, action, noError }) {
   );
 }
 
-function DeletePopUp({ error }) {
-  const { selectedId, setShowDeletePopup } = useAppContext();
+function DeletePopUp() {
+  const { selectedId, setShowDeletePopup, showError, showSuccess } =
+    useAppContext();
 
   // delete patient from database by id
   async function handleDelete(id) {
@@ -83,8 +84,9 @@ function DeletePopUp({ error }) {
         `https://64d3873467b2662bf3dc5f5b.mockapi.io/family/patients/${id}`
       );
       console.log("Patient successfully deleted", res);
+      showSuccess("პაციენტის წარმატებით წაიშალა");
     } catch (error) {
-      setShowDeletePopup("error");
+      showError();
       console.log(`Error deleting patient: ${error}`);
     }
   }
@@ -100,46 +102,26 @@ function DeletePopUp({ error }) {
         whileInView={{ y: 0 }}
         className="SELECTED_ITEM border border-black rounded-sm py-2 px-6 bg-white"
       >
-        {error ? (
-          <>
-            <p className="SELECTED_ITEM text-center max-w-[300px]">
-              დაფიქსირდა შეცდომა, გთხოვთ ცადოთ ხელახლა
-            </p>
-            <div className="SELECTED_ITEM flex justify-center my-4">
-              <button
-                className="SELECTED_ITEM text-center bg-red-400 py-1 px-4"
-                onClick={() => {
-                  setShowDeletePopup(false);
-                }}
-              >
-                დახურვა
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="SELECTED_ITEM">გსურთ პაციენტის წაშლა ?</p>
-            <div className="SELECTED_ITEM flex justify-between my-4">
-              <button
-                className="bg-green-400 py-1 px-4"
-                onClick={() => {
-                  handleDelete(selectedId);
-                  setShowDeletePopup(false);
-                }}
-              >
-                დიახ
-              </button>
-              <button
-                className="SELECTED_ITEM bg-red-400 py-1 px-4"
-                onClick={() => {
-                  setShowDeletePopup(false);
-                }}
-              >
-                არა
-              </button>
-            </div>
-          </>
-        )}
+        <p className="SELECTED_ITEM">გსურთ პაციენტის წაშლა ?</p>
+        <div className="SELECTED_ITEM flex justify-between my-4">
+          <button
+            className="bg-green-400 py-1 px-4"
+            onClick={() => {
+              handleDelete(selectedId);
+              setShowDeletePopup(false);
+            }}
+          >
+            დიახ
+          </button>
+          <button
+            className="SELECTED_ITEM bg-red-400 py-1 px-4"
+            onClick={() => {
+              setShowDeletePopup(false);
+            }}
+          >
+            არა
+          </button>
+        </div>
       </motion.div>
     </motion.div>
   );

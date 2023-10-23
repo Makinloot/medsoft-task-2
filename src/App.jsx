@@ -6,7 +6,7 @@ import { useAppContext } from "./context/ContextProvider";
 function App() {
   const { showForm, showUpdateForm, selectedId } = useAppContext();
   return (
-    <div className="pt-20">
+    <div className="pt-24">
       <Table />
       {showForm && <Form />}
       {showUpdateForm && <UpdateForm id={selectedId} />}
