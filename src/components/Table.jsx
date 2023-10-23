@@ -4,9 +4,79 @@ import { useAppContext } from "../context/ContextProvider";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import TableButtons from "./TableButtons";
+import { Table as AntTable } from "antd";
 
 export default function Table() {
-  const { data } = useAppContext();
+  const {
+    data,
+    setShowButtons,
+    setSelectedId,
+    selectedId,
+    showUpdateForm,
+    setShowUpdateForm,
+  } = useAppContext();
+
+  const columns = [
+    {
+      title: "გვარი სახელი",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "დაბ თარიღი",
+      dataIndex: "dob",
+      key: "dob",
+    },
+    {
+      title: "სქესი",
+      dataIndex: "genderId",
+      key: "genderId",
+    },
+    {
+      title: "მობ ნომერი",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "მისამართი",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "პირადი ნომერი",
+      dataIndex: "personalNum",
+      key: "personalNum",
+    },
+  ];
+
+  const onRowClick = (record) => ({
+    onClick: () => {
+      setSelectedId(record.id);
+      setShowButtons(true);
+      if (selectedId === record.id) {
+        setShowUpdateForm(true);
+      }
+    },
+  });
+
+  useEffect(() => {
+    // check if click contains class SELECTED_ITEM
+    const handleClick = (e) => {
+      if (e.target.classList.contains("SELECTED_ITEM")) return;
+      else if (
+        !e.target.classList.contains("SELECTED_ITEM") &&
+        showUpdateForm === true
+      )
+        return;
+      else {
+        setSelectedId("");
+        setShowButtons(false);
+      }
+    };
+    window.addEventListener("click", handleClick);
+
+    // return () => window.removeEventListener("click", handleClick);
+  }, [showUpdateForm]);
 
   return (
     <div className="Table">
@@ -17,9 +87,10 @@ export default function Table() {
             <motion.div
               initial={{ y: 50 }}
               animate={{ y: 0 }}
-              className="border border-black mt-4"
+              className="mt-4"
+              // className="border border-black mt-4"
             >
-              <div className="overflow-x-auto">
+              {/* <div className="overflow-x-auto">
                 <table className="table table-xs">
                   <thead>
                     <tr className="border-black text-black">
@@ -39,7 +110,13 @@ export default function Table() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </div> */}
+              <AntTable
+                dataSource={data}
+                columns={columns}
+                onRow={onRowClick}
+                rowClassName={"SELECTED_ITEM"}
+              />
             </motion.div>
           ) : (
             <div className="loading-animation">

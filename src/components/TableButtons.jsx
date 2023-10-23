@@ -44,50 +44,35 @@ function TableButton({ value, icon, action, noError }) {
     useAppContext();
   return (
     <>
-      {/* <motion.button
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.6 }}
-      className={
-        noError
-          ? `flex items-center gap-1 hover:bg-slate-400 bg-slate-300 py-1 px-4`
-          : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
-              showButtons
-                ? "opacity-100 bg-slate-300 hover:bg-slate-400"
-                : "opacity-50 bg-slate-200 cursor-not-allowed"
-            }`
-      }
-      onClick={() => {
-        if (showButtons) {
-          if (action === "delete") setShowDeletePopup("delete");
-          else if (action === "update") setShowUpdateForm(true);
-        } else if (noError) setShowForm(true);
-      }}
-    > */}
-      <Button
-        className={
-          noError
-            ? `flex items-center gap-1 py-1 px-4`
-            : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
-                showButtons ? "opacity-100 " : "opacity-50 cursor-not-allowed"
-              }`
-        }
-        onClick={() => {
-          if (showButtons) {
-            if (action === "delete") setShowDeletePopup("delete");
-            else if (action === "update") setShowUpdateForm(true);
-          } else if (noError) setShowForm(true);
-        }}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.6 }}
       >
-        <div className="SELECTED_ITEM">{icon}</div>
-        <span className="text-sm SELECTED_ITEM">{value}</span>
-        {!showButtons && !noError && (
-          <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
-            <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
-          </div>
-        )}
-      </Button>
-      {/* </motion.button> */}
+        <Button
+          className={
+            noError
+              ? `flex items-center gap-1 py-1 px-4`
+              : `SELECTED_ITEM table-button flex items-center gap-1 py-1 px-4 relative ${
+                  showButtons ? "opacity-100 " : "opacity-50 cursor-not-allowed"
+                }`
+          }
+          onClick={() => {
+            if (showButtons) {
+              if (action === "delete") setShowDeletePopup("delete");
+              else if (action === "update") setShowUpdateForm(true);
+            } else if (noError) setShowForm(true);
+          }}
+        >
+          <div className="SELECTED_ITEM">{icon}</div>
+          <span className="text-sm SELECTED_ITEM">{value}</span>
+          {!showButtons && !noError && (
+            <div className="error-text absolute text-xs opacity-0 bg-gray-600 text-white top-[-30px] right-[-80px] rounded-sm p-2">
+              <p className="text-center">გთხოვთ აირჩიოთ პაციენტი</p>
+            </div>
+          )}
+        </Button>
+      </motion.div>
     </>
   );
 }
