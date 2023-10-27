@@ -25,7 +25,7 @@ export default function FormInputs({
         handleChange={handleChange}
         handleBlur={handleBlur}
         name="fullName"
-        label="სახელი გვარი"
+        label="გვარი სახელი"
         value={values.fullName}
         error={touched.fullName && errors.fullName}
         required

@@ -83,7 +83,7 @@ export default function Table() {
 
   useEffect(() => {
     dispatch(fetchData());
-  }, []);
+  }, [savedData]);
 
   return (
     <div className="Table">
